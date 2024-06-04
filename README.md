@@ -112,3 +112,66 @@ BP(back propagation, **反向传播**)算法包括**信号的前向传播**和**
 ### Auxiliary Classifier辅助分类器
 
 - ![img_3.png](imgs/03_GoogLeNet/img_3.png)
+
+## ResNet[2015]
+
+> Deep Residual Learning for Image Recognition
+
+### 网络亮点
+
+- 超深的网络结构(突破1000层)
+- 提出 `residual` 模块
+- 使用 `Batch Normalization` 加速训练(对齐dropout)
+- ![残差块](imgs/04_ResNet/img.png)
+
+### 问题提出
+
+当网络深度增加时，训练/测试损失增加：
+- ![损失](imgs/04_ResNet/img_1.png)
+- 梯度消失或梯度爆炸。如当损失梯度是小于1的数，反向传播根据链式法则梯度相乘会越来越小，梯度爆炸同理。
+- 退化问题(degradation problem)。
+
+### residual结构
+
+- ![img_2.png](imgs/04_ResNet/img_2.png)
+- `1*1`卷积核用来降维和升维，同时降低了参数量
+
+ResNet-34:
+- ![img_3.png](imgs/04_ResNet/img_3.png)
+- ![img_4.png](imgs/04_ResNet/img_4.png)
+
+## Batch Normalization
+
+- BN的目的是使一批(Batch)的feature map满足均值为0，方差为1的分布规律
+- ![BN](imgs/04_ResNet/img_5.png)
+- 具体地，是指输入模型的一批数据的某一通道满足零均值、单位方差分布
+- ![BN计算过程](imgs/04_ResNet/img_6.png)
+
+### 使用BN时需要注意的问题
+
+1. 训练时要将training设置为True，验证时将training参数设置为False。在pytorch中可通过创建模型的`model.train()`和`model.eval()`方法控制
+2. **`batch_size`尽可能设置大点**，设置小后表现可能很糟糕，设置的值越大求的均值和方差越接近整个训练集的均值和方差
+3. **建议将bn层放在卷积层(Conv)和激活曾(例如Relu之间)，且卷积层不要使用偏置bias**。因为没有用。
+
+## 迁移学习
+
+1. 能够快速地训练出一个理想的结果
+2. 当数据集较小时也能训练出理想的效果
+3. 注意：使用别人预训练模型参数时，要注意别人的预处理方式
+4. ![迁移学习](imgs/04_ResNet/img_7.png)
+
+### 常见的迁移学习方式
+
+- ![迁移学习方法](imgs/04_ResNet/img_8.png)
+
+## ResNeXt
+
+> Aggregated Residual Transformations for Deep Neural Networks
+
+- ![ResNet与ResNeXt](imgs/04_ResNet/img_9.png)
+
+### 组卷积(Group Convolution)
+
+- ![组卷积和DW卷积](imgs/04_ResNet/img_10.png)
+- ![组卷积的等价形式](imgs/04_ResNet/img_11.png)
+- ![ResNeXt参数设置](imgs/04_ResNet/img_12.png)
